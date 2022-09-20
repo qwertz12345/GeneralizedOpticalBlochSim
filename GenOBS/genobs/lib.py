@@ -1,6 +1,3 @@
-# %%
-# import plotly.express as px
-# about()
 from typing import List
 from sympy.physics.wigner import wigner_3j, wigner_6j
 from qutip import *
@@ -9,12 +6,15 @@ import numpy as np
 import random
 import seaborn as sns
 from matplotlib import pyplot as plt
+sns.set_theme(rc={
+    # "figure.dpi": 100, 
+    "figure.figsize": (8, 6)
+    })
 
 
 def matrixplot(oper, annot=False, xlabels="auto", ylabels="auto", axs=None, figsize=(2 * 8.4, 6.72)):
     if type(oper) is Qobj:
         oper = oper.full()
-
     if axs:
         [ax1, ax2] = axs
     else:
@@ -53,10 +53,6 @@ def matrixplot(oper, annot=False, xlabels="auto", ylabels="auto", axs=None, figs
     return fig, [ax1, ax2]
 
 
-sns.set_theme(rc={
-    # "figure.dpi": 100, 
-    "figure.figsize": (8, 6)
-    })
 
 random.seed(389)
 # qutip.settings.auto_tidyup = True
@@ -758,45 +754,45 @@ def B_loop(
     )
 
 
-def H_mw(Bmw_x, Bmw_y, Bmw_z, line="D1", det_mw=0.0, b_static_z=0.08):
-    """Total Hamiltonian for atom-MW interaction (no laser).
-    Detuning from clock transition"""
-    hb0 = H_hfs_ground() + H_B(bz=b_static_z)  # atom in static magnetic, longitudinal field
-    eigvals, eigstates = hb0.eigenstates()
-    F_states_reordered = [
-        eigstates[2],
-        eigstates[1],
-        eigstates[0],
-    ]  # reorder the eigenstates to have same basis in the same order: |F=1, m=-1>, |F=1, m=0>, ...
-    for k in range(3, 3 + 5):
-        F_states_reordered.append(eigstates[k])
-    eigvals_reordered = [eigvals[2], eigvals[1], eigvals[0]]
-    for k in range(3, 3 + 5):
-        eigvals_reordered.append(eigvals[k])
+# def H_mw(Bmw_x, Bmw_y, Bmw_z, line="D1", det_mw=0.0, b_static_z=0.08):
+#     """Total Hamiltonian for atom-MW interaction (no laser).
+#     Detuning from clock transition"""
+#     hb0 = H_hfs_ground() + H_B(bz=b_static_z)  # atom in static magnetic, longitudinal field
+#     eigvals, eigstates = hb0.eigenstates()
+#     F_states_reordered = [
+#         eigstates[2],
+#         eigstates[1],
+#         eigstates[0],
+#     ]  # reorder the eigenstates to have same basis in the same order: |F=1, m=-1>, |F=1, m=0>, ...
+#     for k in range(3, 3 + 5):
+#         F_states_reordered.append(eigstates[k])
+#     eigvals_reordered = [eigvals[2], eigvals[1], eigvals[0]]
+#     for k in range(3, 3 + 5):
+#         eigvals_reordered.append(eigvals[k])
 
-    energ_shifted = [
-        en - eigvals_reordered[1] for en in eigvals_reordered
-    ]  # shift energies so that |F=1, mF=0> corresponds to 0 energy
-    ens = [
-        en if k < 3 else en - energ_shifted[5]  # rotating frame
-        for k, en in enumerate(energ_shifted)
-    ]
-    # ens = eigvals_reordered
-    # det_mw -=
-    h_a = sum(
-        [(ens[m + 2 + 3] - det_mw) * ket_Fg(2, m).proj()
-         for m in range(-2, 2 + 1)]
-    ) + sum([ens[m + 1] * ket_Fg(1, m).proj() for m in range(-1, 2)])
-    dims = 16 if line == "D1" else 24
-    hb_ac = H_B(bx=Bmw_x, by=Bmw_y, bz=Bmw_z).transform(F_states_reordered)
-    hb_ac = hb_ac.full()
-    for i in range(7):  # RWA
-        hb_ac[i, i + 1] = 0.0
-        hb_ac[i + 1, i] = 0.0
-    h_a_mw = np.zeros(shape=(dims, dims), dtype=np.cdouble)
-    h_a_mw[:8, :8] = h_a
-    h_a_mw[:8, :8] = hb_ac + h_a_mw[:8, :8]
-    return Qobj(h_a_mw)
+#     energ_shifted = [
+#         en - eigvals_reordered[1] for en in eigvals_reordered
+#     ]  # shift energies so that |F=1, mF=0> corresponds to 0 energy
+#     ens = [
+#         en if k < 3 else en - energ_shifted[5]  # rotating frame
+#         for k, en in enumerate(energ_shifted)
+#     ]
+#     # ens = eigvals_reordered
+#     # det_mw -=
+#     h_a = sum(
+#         [(ens[m + 2 + 3] - det_mw) * ket_Fg(2, m).proj()
+#          for m in range(-2, 2 + 1)]
+#     ) + sum([ens[m + 1] * ket_Fg(1, m).proj() for m in range(-1, 2)])
+#     dims = 16 if line == "D1" else 24
+#     hb_ac = H_B(bx=Bmw_x, by=Bmw_y, bz=Bmw_z).transform(F_states_reordered)
+#     hb_ac = hb_ac.full()
+#     for i in range(7):  # RWA
+#         hb_ac[i, i + 1] = 0.0
+#         hb_ac[i + 1, i] = 0.0
+#     h_a_mw = np.zeros(shape=(dims, dims), dtype=np.cdouble)
+#     h_a_mw[:8, :8] = h_a
+#     h_a_mw[:8, :8] = hb_ac + h_a_mw[:8, :8]
+#     return Qobj(h_a_mw)
 
 
 def get_equally_ground_state_D1():
@@ -815,17 +811,17 @@ def projector_excited_D2():
     return sum([basis(24, k).proj() for k in range(8, 24)])
 
 
-def spec_solve(freq):
-    steps = 5000
-    res_spec = mesolve(
-        laser_sigma_plus_F2_FP1_D1(1e-3, det=freq),
-        rho0=get_equally_ground_state_D1(),
-        tlist=np.linspace(0, 1e-6, 100),
-        c_ops=natural_decay_ops_D1() + quenching_ops(line="D1"),
-        e_ops=[projector_excited_D1()],
-        options=Options(nsteps=steps),
-    )
-    return res_spec.expect[0][-1]
+# def spec_solve(freq):
+#     steps = 5000
+#     res_spec = mesolve(
+#         laser_sigma_plus_F2_FP1_D1(1e-3, det=freq),
+#         rho0=get_equally_ground_state_D1(),
+#         tlist=np.linspace(0, 1e-6, 100),
+#         c_ops=natural_decay_ops_D1() + quenching_ops(line="D1"),
+#         e_ops=[projector_excited_D1()],
+#         options=Options(nsteps=steps),
+#     )
+#     return res_spec.expect[0][-1]
 
 
 def test_D2_saturation():
@@ -839,9 +835,9 @@ def test_D2_saturation():
     )
 
 
-# %%
-if __name__ == "__main__":
-    laser_freq_scan = np.linspace(-2e8 * 2 * pi, 1e9 * 2 * pi, 200)
-    result = parallel_map(spec_solve, laser_freq_scan)
-    plt.plot(laser_freq_scan, result)
-    plt.show()
+# # %%
+# if __name__ == "__main__":
+#     laser_freq_scan = np.linspace(-2e8 * 2 * pi, 1e9 * 2 * pi, 200)
+#     result = parallel_map(spec_solve, laser_freq_scan)
+#     plt.plot(laser_freq_scan, result)
+#     plt.show()
