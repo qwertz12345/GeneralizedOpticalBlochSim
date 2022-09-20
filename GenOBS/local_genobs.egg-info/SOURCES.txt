@@ -1,0 +1,7 @@
+setup.cfg
+setup.py
+genobs/lib.py
+local_genobs.egg-info/PKG-INFO
+local_genobs.egg-info/SOURCES.txt
+local_genobs.egg-info/dependency_links.txt
+local_genobs.egg-info/top_level.txt
