@@ -1,0 +1,92 @@
+[[Model]]
+    (((Model(voigt, prefix='p1_') + Model(voigt, prefix='p2_')) + Model(voigt, prefix='p3_')) + Model(voigt, prefix='p4_'))
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 104
+    # data points      = 2000
+    # variables        = 16
+    chi-square         = 1.0588e-21
+    reduced chi-square = 5.3367e-25
+    Akaike info crit   = -111764.094
+    Bayesian info crit = -111674.479
+[[Variables]]
+    p1_amplitude:  1.5905e-07 +/- 2.8059e-13 (0.00%) (init = 1.704628e-07)
+    p1_center:    -2.25256117 +/- 1.9867e-07 (0.00%) (init = -2.253493)
+    p1_sigma:      0.21243253 +/- 5.8748e-07 (0.00%) (init = 0.1471768)
+    p2_amplitude:  1.5718e-07 +/- 2.8052e-13 (0.00%) (init = 1.681298e-07)
+    p2_center:    -3.06707219 +/- 2.0175e-07 (0.00%) (init = -3.066319)
+    p2_sigma:      0.21243162 +/- 5.9586e-07 (0.00%) (init = 0.1473835)
+    p3_amplitude:  3.1933e-08 +/- 2.8047e-13 (0.00%) (init = 2.635797e-08)
+    p3_center:     3.76761543 +/- 9.8828e-07 (0.00%) (init = 3.753406)
+    p3_sigma:      0.21243046 +/- 2.9226e-06 (0.00%) (init = 0.1301569)
+    p4_amplitude:  1.5720e-07 +/- 2.8048e-13 (0.00%) (init = 1.757132e-07)
+    p4_center:     4.58211701 +/- 2.0171e-07 (0.00%) (init = 4.578649)
+    p4_sigma:      0.21243583 +/- 5.9582e-07 (0.00%) (init = 0.1499424)
+    p1_gamma:      0.05685064 +/- 9.9882e-07 (0.00%) (init = 0.1471768)
+    p1_fwhm:       0.56381192 +/- 5.2153e-07 (0.00%) == '1.0692*p1_gamma+sqrt(0.8664*p1_gamma**2+5.545083*p1_sigma**2)'
+    p1_height:     2.4425e-07 +/- 1.8121e-13 (0.00%) == '(p1_amplitude/(max(1e-15, p1_sigma*sqrt(2*pi))))*wofz((1j*p1_gamma)/(max(1e-15, p1_sigma*sqrt(2)))).real'        
+    p2_gamma:      0.05752407 +/- 1.0114e-06 (0.00%) (init = 0.1473835)
+    p2_fwhm:       0.56459614 +/- 5.2993e-07 (0.00%) == '1.0692*p2_gamma+sqrt(0.8664*p2_gamma**2+5.545083*p2_sigma**2)'
+    p2_height:     2.4085e-07 +/- 1.8114e-13 (0.00%) == '(p2_amplitude/(max(1e-15, p2_sigma*sqrt(2*pi))))*wofz((1j*p2_gamma)/(max(1e-15, p2_sigma*sqrt(2)))).real'        
+    p3_gamma:      0.05663736 +/- 4.9711e-06 (0.01%) (init = 0.1301569)
+    p3_fwhm:       0.56355817 +/- 2.5939e-06 (0.00%) == '1.0692*p3_gamma+sqrt(0.8664*p3_gamma**2+5.545083*p3_sigma**2)'
+    p3_height:     4.9075e-08 +/- 1.8122e-13 (0.00%) == '(p3_amplitude/(max(1e-15, p3_sigma*sqrt(2*pi))))*wofz((1j*p3_gamma)/(max(1e-15, p3_sigma*sqrt(2)))).real'        
+    p4_gamma:      0.05751778 +/- 1.0114e-06 (0.00%) (init = 0.1499424)
+    p4_fwhm:       0.56459867 +/- 5.2981e-07 (0.00%) == '1.0692*p4_gamma+sqrt(0.8664*p4_gamma**2+5.545083*p4_sigma**2)'
+    p4_height:     2.4088e-07 +/- 1.8112e-13 (0.00%) == '(p4_amplitude/(max(1e-15, p4_sigma*sqrt(2*pi))))*wofz((1j*p4_gamma)/(max(1e-15, p4_sigma*sqrt(2)))).real'        
+[[Correlations]] (unreported correlations are < 0.100)
+    C(p3_sigma, p3_gamma)         = -0.929
+    C(p1_sigma, p1_gamma)         = -0.929
+    C(p4_sigma, p4_gamma)         = -0.929
+    C(p2_sigma, p2_gamma)         = -0.929
+    C(p3_amplitude, p3_gamma)     = 0.877
+    C(p1_amplitude, p1_gamma)     = 0.877
+    C(p2_amplitude, p2_gamma)     = 0.877
+    C(p4_amplitude, p4_gamma)     = 0.877
+    C(p1_amplitude, p2_amplitude) = -0.789
+    C(p3_amplitude, p4_amplitude) = -0.789
+    C(p3_amplitude, p3_sigma)     = -0.695
+    C(p1_amplitude, p1_sigma)     = -0.695
+    C(p4_amplitude, p4_sigma)     = -0.694
+    C(p2_amplitude, p2_sigma)     = -0.694
+    C(p2_amplitude, p1_gamma)     = -0.584
+    C(p4_amplitude, p3_gamma)     = -0.584
+    C(p1_amplitude, p2_gamma)     = -0.583
+    C(p3_amplitude, p4_gamma)     = -0.583
+    C(p3_amplitude, p4_center)    = 0.442
+    C(p1_amplitude, p2_center)    = -0.442
+    C(p1_center, p2_center)       = 0.442
+    C(p3_center, p4_center)       = 0.442
+    C(p1_center, p2_amplitude)    = 0.441
+    C(p3_center, p4_amplitude)    = -0.441
+    C(p1_sigma, p2_amplitude)     = 0.425
+    C(p3_sigma, p4_amplitude)     = 0.425
+    C(p1_amplitude, p2_sigma)     = 0.424
+    C(p3_amplitude, p4_sigma)     = 0.424
+    C(p4_amplitude, p4_center)    = -0.415
+    C(p2_amplitude, p2_center)    = 0.415
+    C(p1_amplitude, p1_center)    = -0.414
+    C(p3_amplitude, p3_center)    = 0.414
+    C(p1_gamma, p2_gamma)         = -0.370
+    C(p3_gamma, p4_gamma)         = -0.369
+    C(p4_center, p4_gamma)        = -0.287
+    C(p2_center, p2_gamma)        = 0.287
+    C(p1_center, p1_gamma)        = -0.287
+    C(p3_center, p3_gamma)        = 0.287
+    C(p1_sigma, p2_gamma)         = 0.282
+    C(p3_sigma, p4_gamma)         = 0.282
+    C(p2_sigma, p1_gamma)         = 0.282
+    C(p4_sigma, p3_gamma)         = 0.281
+    C(p1_sigma, p2_sigma)         = -0.265
+    C(p3_sigma, p4_sigma)         = -0.264
+    C(p4_center, p3_gamma)        = 0.256
+    C(p2_center, p1_gamma)        = -0.256
+    C(p1_center, p2_gamma)        = 0.254
+    C(p3_center, p4_gamma)        = -0.254
+    C(p3_center, p3_sigma)        = -0.150
+    C(p1_center, p1_sigma)        = 0.150
+    C(p4_center, p4_sigma)        = 0.149
+    C(p2_center, p2_sigma)        = -0.149
+
+
+

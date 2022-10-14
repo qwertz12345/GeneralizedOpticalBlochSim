@@ -1,6 +1,9 @@
 setup.cfg
 setup.py
-genobs/lib.py
+genobs/Rubidium87_operators.py
+genobs/experiment_parameters.py
+genobs/lindblad_jump.py
+genobs/visualizations.py
 local_genobs.egg-info/PKG-INFO
 local_genobs.egg-info/SOURCES.txt
 local_genobs.egg-info/dependency_links.txt

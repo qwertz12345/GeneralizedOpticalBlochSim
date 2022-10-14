@@ -1,2 +1,0 @@
-laser_intens = 0.01 * 10     # W/m²
-b_longitudinal = 0.1         # G		

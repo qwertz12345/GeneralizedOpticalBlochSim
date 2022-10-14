@@ -2,11 +2,10 @@
 # import plotly.express as px
 # about()
 from typing import List
-from my_matrix_plot import matrixplot
 from sympy.physics.wigner import wigner_3j, wigner_6j
 from qutip import *
 import scipy.constants as constants
-import numpy as np
+import numpy as np 
 import random
 import seaborn as sns
 from matplotlib import pyplot as plt
@@ -52,9 +51,11 @@ def Delta_E_P12(F):
 def Delta_E_P32(F):
     Je = 3 / 2
     K = K_factor(F, Je)
-    return (1 / 2 * A_P32 * K + B_P32
-            * (3 / 2 * K * (K + 1) - 2 * I * (I + 1) * Je * (Je + 1))
-            / (4 * I * (2 * I - 1) * Je * (2 * Je - 1)))
+    return (
+        1 / 2 * A_P32 * K
+        + B_P32 * (3 / 2 * K * (K + 1) - 2 * I * (I + 1) * Je * (Je + 1)) 
+                / (4 * I * (2 * I - 1) * Je * (2 * Je - 1))
+        )
 
 
 def ket_Fg(F, mF):
@@ -255,20 +256,13 @@ F2_FP1_FREQUENCY_D1 = (-509.06e6 - 2.563005979089109e9) * 2 * pi
 
 
 def laser_sigma_plus_F2_FP1_D1(intensity, det=0.0):
-    h = H_atom_field_D1(-1, E_0_plus(intensity)) + H_atom(
-        F2_FP1_FREQUENCY_D1 + det, "D1"
-    )
-    # h[:3, :] = 0.0
-    # h[:, :3] = 0.0
+    h = (H_atom_field_D1(-1, E_0_plus(intensity)) 
+        + H_atom(F2_FP1_FREQUENCY_D1 + det, "D1"))
     return h
 
 
 def laser_sigma_minus_F2_FP1_D1(intensity, det=0.0):
-    h = H_atom_field_D1(1, E_0_plus(intensity)) + H_atom(
-        F2_FP1_FREQUENCY_D1 + det, "D1"
-    )
-    # h[:3, :] = 0.0
-    # h[:, :3] = 0.0
+    h = H_atom_field_D1(1, E_0_plus(intensity)) + H_atom(F2_FP1_FREQUENCY_D1 + det, "D1")
     return h
 
 
@@ -276,28 +270,17 @@ F2_FP2_FREQUENCY_D1 = -1.61038415e10 + 1.91912041e09
 
 
 def laser_sigma_plus_F2_FP2_D1(intensity, det=0.0):
-    h = H_atom_field_D1(-1, E_0_plus(intensity)) + H_atom(
-        F2_FP2_FREQUENCY_D1 + det, "D1"
-    )
-    # h[:3, :] = 0.0
-    # h[:, :3] = 0.0
+    h = H_atom_field_D1(-1, E_0_plus(intensity)) + H_atom(F2_FP2_FREQUENCY_D1 + det, "D1")
     return h
 
 
 def laser_pi_F2_FP2_D1(intensity, det=0.0):
-    h = H_atom_field_D1(0, E_0_plus(intensity)) + H_atom(
-        F2_FP2_FREQUENCY_D1 + det, "D1"
-    )
-
+    h = H_atom_field_D1(0, E_0_plus(intensity)) + H_atom(F2_FP2_FREQUENCY_D1 + det, "D1")
     return h
 
 
 def laser_sigma_minus_F2_FP2_D1(intensity, det=0.0):
-    h = H_atom_field_D1(1, E_0_plus(intensity)) + H_atom(
-        F2_FP2_FREQUENCY_D1 + det, "D1"
-    )
-    # h[:3, :] = 0.0
-    # h[:, :3] = 0.0
+    h = H_atom_field_D1(1, E_0_plus(intensity)) + H_atom(F2_FP2_FREQUENCY_D1 + det, "D1")
     return h
 
 
@@ -305,11 +288,7 @@ F1_FP_FREQUENCY_D1 = 2.68397359e10
 
 
 def laser_sigma_plus_F1_FP_D1(intensity, det=0.0):
-    h = H_atom_field_D1(-1, E_0_plus(intensity)) + H_atom(
-        F1_FP_FREQUENCY_D1 + det, "D1"
-    )
-    # h[3:8, :] = 0.0
-    # h[:, 3:8] = 0.0
+    h = H_atom_field_D1(-1, E_0_plus(intensity)) + H_atom(F1_FP_FREQUENCY_D1 + det, "D1")
     return h
 
 
@@ -323,9 +302,7 @@ CYCLING_TRANSITION_D2 = (193.7407e6 - 2.563005979089109e9) * 2 * pi
 
 
 def laser_sigma_plus_cycling_D2(intensity, detuning=0.0):
-    return H_atom_field_D2(-1, E_0_plus(intensity)) + H_atom(
-        CYCLING_TRANSITION_D2 + detuning, "D2"
-    )
+    return H_atom_field_D2(-1, E_0_plus(intensity)) + H_atom(CYCLING_TRANSITION_D2 + detuning, "D2")
 
 
 # def laser_sigma_minus_D2(intensity, detuning=0.0):
