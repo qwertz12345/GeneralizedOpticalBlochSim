@@ -115,7 +115,17 @@ def F1_to_F2_ground_state_decay(line: str, gamma=3e3) -> List:
     return ops
 
 
-def wall_coll(line, gamma=1e3):
+def wall_coll(line, gamma=2e3):
+    dims_op = 16 if line == "D1" else 24
+    return [
+        (gamma) ** (1 / 2) * basis(dims_op, end) * basis(dims_op, begin).dag()
+        for end in range(8)
+        for begin in range(8)
+        # if begin != end
+    ]
+
+
+def t1_damping(line, gamma=4.5e3):
     dims_op = 16 if line == "D1" else 24
     return [
         (gamma) ** (1 / 2) * basis(dims_op, end) * basis(dims_op, begin).dag()
@@ -154,3 +164,29 @@ def dephasing_ground_states(line: str, gamma=1e3):
             for mf in range(-f, f + 1)
         ]
 
+
+def faraday_rot_angle(rho):
+    """
+    rho: D1, 16 x 16
+    """
+    wavelength_probe_laser = 780e-9
+    density_atoms = 2.33e12 / (1e-2) ** 3
+    length_cell = 2e-3
+    detunings_probe = [-30e9 * 2 * pi, (-30e9 - 6.834682e9) * 2 * pi]
+    return (
+        sum(
+            [
+                mF
+                * (-1) ** F
+                * rho.matrix_element(ket_Fg_D1(F, mF), ket_Fg_D1(F, mF))
+                / detunings_probe[F - 1]
+                for F in (1, 2)
+                for mF in range(-F, F + 1)
+            ]
+        ).real
+        * density_atoms
+        * length_cell
+        * wavelength_probe_laser**2
+        * GAMMA_RAD_D2
+        * 0.5
+    )

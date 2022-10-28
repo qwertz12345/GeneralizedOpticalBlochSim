@@ -22,7 +22,7 @@ def faraday_rot_angle(rho: Qobj, detuning) -> float:
             [
                 mF
                 * (-1) ** F
-                * rho.matrix_element(ket_Fg_D1(F, mF).dag(), ket_Fg_D1(F, mF))
+                * rho.matrix_element(ket_Fg_D1(F, mF), ket_Fg_D1(F, mF))
                 / detunings_probe[F - 1]
                 for F in (1, 2)
                 for mF in range(-F, F + 1)
