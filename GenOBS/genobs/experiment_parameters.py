@@ -135,7 +135,7 @@ def t1_damping(line, gamma=4.5e3):
     ]
 
 
-def dephasing_excited_states(line: str, gamma=1e7):  # value for rate???
+def dephasing_excited_states(line: str, gamma=1.6e8):  # value for rate???
     if line == "D1":
         return [
             (gamma) ** (1 / 2) * ket_Fe_D1(f, mf).proj()
@@ -165,21 +165,35 @@ def dephasing_ground_states(line: str, gamma=1e3):
         ]
 
 
-def faraday_rot_angle(rho):
+def faraday_rot_angle(rho, detuning):
+    """Faraday Rotation Angle in the usual approximation for a 
+    linearly polarized laser (D2).
+
+    Parameters
+    ----------
+    rho : Qobj
+        Densitiy matrix
+    detuning_ : float
+        Detuning from D2 Center (384.230 484 468 5 THz)
+
+    Returns
+    -------
+    Float
+        Rotation Angle
     """
-    rho: D1, 16 x 16
-    """
+    ground_state_pops = rho.diag()[:8]
     wavelength_probe_laser = 780e-9
     density_atoms = 2.33e12 / (1e-2) ** 3
     length_cell = 2e-3
-    detunings_probe = [-30e9 * 2 * pi, (-30e9 - 6.834682e9) * 2 * pi]
+    detunings_hfs = [detuning - 4.271676631815181e9 * 2 * pi, detuning+2.563005979089109e9 * 2 * pi]
     return (
         sum(
             [
                 mF
                 * (-1) ** F
-                * rho.matrix_element(ket_Fg_D1(F, mF), ket_Fg_D1(F, mF))
-                / detunings_probe[F - 1]
+                # * rho.matrix_element(ket_Fg_D1(F, mF), ket_Fg_D1(F, mF))
+                * ground_state_pops[mF + F] if F==1 else ground_state_pops[mF + F+3]
+                / detunings_hfs[F - 1]
                 for F in (1, 2)
                 for mF in range(-F, F + 1)
             ]

@@ -1,7 +1,9 @@
 setup.cfg
 setup.py
 genobs/Rubidium87_operators.py
+genobs/atomic_polarisation_params_exact.py
 genobs/experiment_parameters.py
+genobs/faraday.py
 genobs/lindblad_jump.py
 genobs/visualizations.py
 local_genobs.egg-info/PKG-INFO

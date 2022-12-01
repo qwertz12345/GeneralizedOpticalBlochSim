@@ -16,6 +16,7 @@ def matrixplot(
     else:
         fig, [ax1, ax2] = plt.subplots(ncols=2, figsize=figsize, dpi=100)
         ax1.xaxis.tick_top()
+    ax1.set_title("Real")
     sns.heatmap(
         oper.real,
         annot=annot,
@@ -26,8 +27,11 @@ def matrixplot(
         ax=ax1,
         square=not annot,
         annot_kws={"fontsize": "small", "fontstretch": "condensed"},
+        # robust=True,
+        linewidth=0.3,
     )
-    ax1.set_title("Real")
+
+    ax2.set_title("Imag")
     ax2.xaxis.tick_top()
     sns.heatmap(
         oper.imag,
@@ -39,48 +43,68 @@ def matrixplot(
         ax=ax2,
         square=not annot,
         annot_kws={"fontsize": "small", "fontstretch": "condensed"},
+        # robust=True,
     )
-    ax2.set_title("Imag")
     plt.tight_layout()
     return fig, [ax1, ax2]
 
 
 def index_to_F_mF_string_D1(ind):
-    if ind < 3:
-        return rf"""$F=1, m={ind - 1}$"""
+    if ind == 0:
+        return rf"""F = 1,  m = {ind - 1: d}"""
+    elif ind < 3:
+        return rf"""           m = {ind - 1: d}"""
+    elif ind == 3:
+        return rf"""F = 2,  m = {ind - 2 - 3: d}"""
     elif ind < 8:
-        return rf"""$F=2, m={ind - 2 - 3}$"""
+        return rf"""           m = {ind - 2 - 3: d}"""
+    elif ind == 8:
+        return rf"""F' = 1, m = -1"""
     elif ind < 8 + 3:
-        return rf"""$F'=1, m={ind - 1 - 8}$"""
+        return rf"""           m = {ind - 1 - 8: d}"""
+    elif ind == 11:
+        return rf"""F' = 2, m = {ind - 1 - 8: d}"""
     else:
-        return rf"""$F'=2, m={ind - 2 - 8 - 3}$"""
+        return rf"""           m = {ind - 2 - 8 - 3: d}"""
 
 
 def index_to_F_mF_string_D2(ind):
-    if ind < 3:
-        return rf"""$F=1, m={ind - 1}$"""
+    if ind == 0:
+        return rf"""F = 1,  m = {ind - 1: d}"""
+    elif ind < 3:
+        return rf"""           m = {ind - 1: d}"""
+    elif ind == 3:
+        return rf"""F = 2,  m = {ind - 2 - 3: d}"""
     elif ind < 8:
-        return rf"""$F=2, m={ind - 2 - 3}$"""
+        return rf"""           m = {ind - 2 - 3: d}"""
     elif ind == 8:
-        return rf"""$F'=0, m={ind - 8}$"""
-    elif ind in (9, 10, 11):
-        return rf"""$F'=1, m={ind - 10}$"""
-    elif ind in (12, 13, 14, 15, 16):
-        return f"""$F'=2, m={ind - 14}$"""
+        return rf"""F' = 0, m =  0"""
+    elif ind == 9:
+        return rf"""F' = 1, m = -1"""
+    elif ind < 9 + 3:
+        return rf"""           m = {ind - 10: d}"""
+    elif ind == 12:
+        return rf"""F' = 2, m = {ind - 14: d}"""
+    elif ind < 12 + 5:
+        return rf"""           m = {ind - 14: d}"""
+    elif ind == 24 - 7:
+        return rf"""F' = 3, m = {ind - 20: d}"""
     else:
-        return f"""$F'=3, m={ind - 20}$"""
+        return rf"""           m = {ind - 20: d}"""
 
 
 def maplot(
     op: Qobj, std_xlabels=True, std_ylabels=True, annot=False, figsize=(2 * 8.4, 6.72)
 ):
-    if op.shape[0] == 16:
+    if op.shape[0] <= 16:
         fig, axs = matrixplot(
             op,
-            xlabels=[index_to_F_mF_string_D1(ind) for ind in range(op.shape[0])]
+            xlabels=[index_to_F_mF_string_D1(ind)
+                     for ind in range(op.shape[0])]
             if std_xlabels
             else "auto",
-            ylabels=[index_to_F_mF_string_D1(ind) for ind in range(op.shape[0])]
+            ylabels=[index_to_F_mF_string_D1(ind)
+                     for ind in range(op.shape[0])]
             if std_ylabels
             else "auto",
             annot=annot,
@@ -90,10 +114,12 @@ def maplot(
     else:
         fig, axs = matrixplot(
             op,
-            xlabels=[index_to_F_mF_string_D2(ind) for ind in range(op.shape[0])]
+            xlabels=[index_to_F_mF_string_D2(ind)
+                     for ind in range(op.shape[0])]
             if std_xlabels
             else "auto",
-            ylabels=[index_to_F_mF_string_D2(ind) for ind in range(op.shape[0])]
+            ylabels=[index_to_F_mF_string_D2(ind)
+                     for ind in range(op.shape[0])]
             if std_ylabels
             else "auto",
             annot=annot,
@@ -169,7 +195,8 @@ def plot_excited_states_time(res_, axs=None):
 
 def plot_total_ground_pop(resa):
     fig, ax = plt.subplots()
-    ax.plot(resa.times, [sum(elem.diag()[:8]) for elem in resa.states], label="Ground")
+    ax.plot(resa.times, [sum(elem.diag()[:8])
+            for elem in resa.states], label="Ground")
     ax.set_ylabel("Total Ground state population")
     ax.set_xlabel("time (s)")
     # ax.legend()
@@ -192,10 +219,45 @@ def plot_bar_ground_pop(rho):
 def plot_bar_excited_pop_D1(rho):
     # populations plot
     fig, [ax1, ax2] = plt.subplots(nrows=2, sharey="all", sharex="all")
-    ax2.bar(list(range(-1, 2)), rho.diag().real[8 : 3 + 8], color="tab:blue")
+    ax2.bar(list(range(-1, 2)), rho.diag().real[8: 3 + 8], color="tab:blue")
     ax1.set_title("F=2")
-    ax1.bar(list(range(-2, 3)), rho.diag().real[3 + 8 : 8 + 8], color="tab:blue")
+    ax1.bar(list(range(-2, 3)),
+            rho.diag().real[3 + 8: 8 + 8], color="tab:blue")
     ax2.set_title("F=1")
     fig.suptitle("Excited States")
     plt.tight_layout()
     return fig, [ax1, ax2]
+
+
+def plot_bar_excited_pop(rho):
+    # populations plot, D1 or D2
+    if rho.shape[0] == 16:
+        fig, [ax1, ax2] = plt.subplots(nrows=2, sharey="all", sharex="all")
+        ax2.bar(list(range(-1, 2)),
+                rho.diag().real[8: 3 + 8], color="tab:blue")
+        ax1.set_title("F=2")
+        ax1.bar(list(range(-2, 3)),
+                rho.diag().real[3 + 8: 8 + 8], color="tab:blue")
+        ax2.set_title("F=1")
+        fig.suptitle("Excited States")
+        plt.tight_layout()
+        return fig, [ax1, ax2]
+    elif rho.shape[0] == 24:
+        fig, [ax1, ax2, ax3, ax4] = plt.subplots(
+            nrows=4, sharey="all", sharex="all")
+        ax1.bar(list(range(-3, 4)), rho.diag().real[-7:], color="tab:blue")
+        ax1.set_title("F'=3")
+        ax2.bar(
+            list(range(-2, 3)), rho.diag().real[3 + 8 + 1: 8 + 8 + 1], color="tab:blue"
+        )
+        ax2.set_title("F'=2")
+        ax3.bar(
+            list(range(-1, 2)), rho.diag().real[8 + 1: 3 + 8 + 1], color="tab:blue"
+        )
+        ax3.set_title("F'=1")
+        ax4.bar([0], rho.diag().real[8], color="tab:blue")
+        ax4.set_title("F'=0")
+
+        fig.suptitle("Excited States")
+        plt.tight_layout()
+        return fig, [ax1, ax2]

@@ -16,13 +16,14 @@ def faraday_rot_angle(rho: Qobj, detuning) -> float:
     wavelength_probe_laser = 780e-9
     density_atoms = 2.33e12 / (1e-2) ** 3
     length_cell = 2e-3
-    detunings_probe = [(detuning - 6.834682e9) * 2 * pi, detuning * 2 * pi]
+    detunings_probe = [(detuning - 6.834682e9* 2 * pi) , detuning]
+    rho_g = Qobj(rho[:8,:8])
     return (
         sum(
             [
                 mF
                 * (-1) ** F
-                * rho.matrix_element(ket_Fg_D1(F, mF), ket_Fg_D1(F, mF))
+                * rho_g.matrix_element(basic_ket_Fg(F, mF), basic_ket_Fg(F, mF))
                 / detunings_probe[F - 1]
                 for F in (1, 2)
                 for mF in range(-F, F + 1)
@@ -36,20 +37,30 @@ def faraday_rot_angle(rho: Qobj, detuning) -> float:
     )
 
 
-def Fz_mean(rho: Qobj) -> tuple:
-    """Calculates the means of the z-component of the collective spin operator F
-    in the ground state for F=1 and F=2
+
+def Fz_mean(rho: Qobj, detuning) -> tuple:
+    """Calculates the mean of the z-component of the collective spin operator F
+    in the ground state
 
     Parameters
     ----------
     rho : Qobj
         density matrix
     """
-    populations_ground = rho.diag()[:8]
-    F1z = [mf * populations_ground[mf + 1] for mf in (-1, 0, 1)]
-    F2z = [mf * populations_ground[mf + 2 + 3] for mf in (-2, -1, 0, 1, 2)]
-    return sum(F1z), sum(F2z)
-
+    detunings_probe = [(detuning - 6.834682e9* 2 * pi), detuning]
+    rho_g = Qobj(rho[:8,:8])
+    return (
+        sum(
+            [
+                mF
+                * (-1) ** F
+                * rho_g.matrix_element(basic_ket_Fg(F, mF), basic_ket_Fg(F, mF))
+                / detunings_probe[F - 1]
+                for F in (1, 2)
+                for mF in range(-F, F + 1)
+            ]
+        )
+    )
 
 def F1_F2_rot_angle(detuning, F1zmean, F2zmean, c=(3 * GAMMA_RAD_D2) ** 2):
     def rb87_atom_density(temperature_kelvin):
