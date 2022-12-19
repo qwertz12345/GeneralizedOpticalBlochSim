@@ -2,7 +2,7 @@ from typing import List
 from scipy.constants import pi, c, epsilon_0, hbar
 from qutip import Qobj, basis, tensor, spin_Jx, spin_Jy, spin_Jz, qeye
 import numpy as np
-from sympy.physics.wigner import wigner_3j, wigner_6j, clebsch_gordan
+from sympy.physics.wigner import wigner_6j, clebsch_gordan
 
 
 # We set hbar = 1
@@ -15,9 +15,12 @@ I = 3 / 2  # Rb87
 JG = 1 / 2
 JD1 = 1 / 2
 JD2 = 3 / 2
-
 OFF_RESONANT_SATURATION_INTENSITY_D1_PI_POL = 4.4876 * 1e-3 / (1e-2) ** 2
 SATURATION_INTENSITY_D2_SIGMA_PM_CYCLING = 1.66933 * (1e-3) / (1e-2) ** 2
+GAMMA_RAD_D1 = 5.7500e6 * 2 * pi
+GAMMA_RAD_D2 = 6.0666e6 * 2 * pi
+SPONTAN_D1 = GAMMA_RAD_D1 
+SPONTAN_D2 = GAMMA_RAD_D2 
 
 
 def K_factor(F, J):
@@ -439,16 +442,62 @@ def Bz_from_rabi_pi_clock(rabi_pi):
     return rabi_pi / 8808673.910654247
 
 
-GAMMA_RAD_D1 = 5.7500e6 * 2 * pi
-GAMMA_RAD_D2 = 6.0666e6 * 2 * pi
-
-
 def natural_decay_ops_D2():
     return [(2 * GAMMA_RAD_D2) ** (1 / 2) * sigma_q(q, "D2") for q in (-1, 0, 1)]
 
 
 def natural_decay_ops_D1():
     return [GAMMA_RAD_D1 ** (1 / 2) * sigma_q(q, "D1") for q in [-1, 0, 1]]
+
+
+def dephasing_ground_excited_states(line="D2", gamma=500 * 2e9 * pi):
+    if line == "D1":
+        f_list = (1, 2)
+        ket_fg = ket_Fg_D1
+        ket_fe = ket_Fe_D1
+    elif line == "D2":
+        f_list = (0, 1, 2, 3)
+        ket_fg = ket_Fg_D2
+        ket_fe = ket_Fe_D2
+    return [
+        (gamma / 2) ** (1 / 2) * (ket_fg(f, mf).proj() - ket_fe(fs, ms).proj())
+        for f in f_list
+        for mf in range(-f, f + 1)
+        for fs in f_list
+        for ms in range(-fs, fs + 1)
+    ]
+
+
+def dephasing_excited_states(line: str, gamma=1.6e8):
+    if line == "D1":
+        f_list = (1, 2)
+        ket_f = ket_Fe_D1
+    elif line == "D2":
+        f_list = (0, 1, 2, 3)
+        ket_f = ket_Fe_D2
+    return [
+        (gamma / 2) ** (1 / 2) * (ket_f(f, mf).proj() - ket_f(fs, ms).proj())
+        for f in f_list
+        for mf in range(-f, f + 1)
+        for fs in f_list
+        for ms in range(-fs, fs + 1)
+    ]
+
+
+def dephasing_ground_states(line: str, gamma=1e3):
+    if line == "D1":
+        f_list = (1, 2)
+        ket_f = ket_Fg_D1
+    elif line == "D2":
+        f_list = (0, 1, 2, 3)
+        ket_f = ket_Fg_D2
+    return [
+        (gamma / 2) ** (1 / 2) * (ket_f(f, mf).proj() - ket_f(fs, ms).proj())
+        for f in f_list
+        for mf in range(-f, f + 1)
+        for fs in f_list
+        for ms in range(-fs, fs + 1)
+    ]
 
 
 # def sigma_q_jbasis_D2(q):

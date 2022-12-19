@@ -125,48 +125,40 @@ def wall_coll(line, gamma=2e3):
     ]
 
 
-def t1_damping(line, gamma=4.5e3):
-    dims_op = 16 if line == "D1" else 24
-    return [
-        (gamma) ** (1 / 2) * basis(dims_op, end) * basis(dims_op, begin).dag()
-        for end in range(8)
-        for begin in range(8)
-        # if begin != end
-    ]
-
-
-def dephasing_excited_states(line: str, gamma=1.6e8):  # value for rate???
+def dephasing_excited_states(line: str, gamma=1.6e8):
     if line == "D1":
-        return [
-            (gamma) ** (1 / 2) * ket_Fe_D1(f, mf).proj()
-            for f in (1, 2)
-            for mf in range(-f, f + 1)
-        ]
+        f_list = (1, 2)
+        ket_f = ket_Fe_D1
     elif line == "D2":
-        return [
-            (gamma) ** (1 / 2) * ket_Fe_D2(f, mf).proj()
-            for f in range(4)
-            for mf in range(-f, f + 1)
-        ]
+        f_list = (0, 1, 2, 3)
+        ket_f = ket_Fe_D2
+    return [
+        (gamma / 2) ** (1 / 2) * (ket_f(f, mf).proj() - ket_f(fs, ms).proj())
+        for f in f_list
+        for mf in range(-f, f + 1)
+        for fs in f_list
+        for ms in range(-fs, fs + 1)
+    ]
 
 
 def dephasing_ground_states(line: str, gamma=1e3):
     if line == "D1":
-        return [
-            (gamma) ** (1 / 2) * ket_Fg_D1(f, mf).proj()
-            for f in (1, 2)
-            for mf in range(-f, f + 1)
-        ]
+        f_list = (1, 2)
+        ket_f = ket_Fg_D1
     elif line == "D2":
-        return [
-            (gamma) ** (1 / 2) * ket_Fg_D2(f, mf).proj()
-            for f in (1, 2)
-            for mf in range(-f, f + 1)
-        ]
+        f_list = (0, 1, 2, 3)
+        ket_f = ket_Fg_D2
+    return [
+        (gamma / 2) ** (1 / 2) * (ket_f(f, mf).proj() - ket_f(fs, ms).proj())
+        for f in f_list
+        for mf in range(-f, f + 1)
+        for fs in f_list
+        for ms in range(-fs, fs + 1)
+    ]
 
 
 def faraday_rot_angle(rho, detuning):
-    """Faraday Rotation Angle in the usual approximation for a 
+    """Faraday Rotation Angle in the usual approximation for a
     linearly polarized laser (D2).
 
     Parameters
@@ -185,15 +177,18 @@ def faraday_rot_angle(rho, detuning):
     wavelength_probe_laser = 780e-9
     density_atoms = 2.33e12 / (1e-2) ** 3
     length_cell = 2e-3
-    detunings_hfs = [detuning - 4.271676631815181e9 * 2 * pi, detuning+2.563005979089109e9 * 2 * pi]
+    detunings_hfs = [
+        detuning - 4.271676631815181e9 * 2 * pi,
+        detuning + 2.563005979089109e9 * 2 * pi,
+    ]
     return (
         sum(
             [
-                mF
-                * (-1) ** F
+                mF * (-1) ** F
                 # * rho.matrix_element(ket_Fg_D1(F, mF), ket_Fg_D1(F, mF))
-                * ground_state_pops[mF + F] if F==1 else ground_state_pops[mF + F+3]
-                / detunings_hfs[F - 1]
+                * ground_state_pops[mF + F]
+                if F == 1
+                else ground_state_pops[mF + F + 3] / detunings_hfs[F - 1]
                 for F in (1, 2)
                 for mF in range(-F, F + 1)
             ]
